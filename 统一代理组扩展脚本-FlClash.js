@@ -1,7 +1,7 @@
-// FlClash 版本：各机场统一为六个代理组。
+// FlClash 版本：各机场统一为七个代理组。
 // 脚本保留 IPv6、DNS 等默认配置；最终是否被覆盖取决于客户端设置。
 function main(config, profileName) {
-  const names = ['手动选择', '自动选择', '优选自动', '故障转移', '优选均衡', 'AI'];
+  const names = ['手动选择', '自动选择', '优选自动', '故障转移', '优选均衡', 'AI', '低倍率优选自动'];
   const url = 'https://www.gstatic.com/generate_204';
   const region = [
     '香港|澳门|澳門|台湾|台灣|臺灣|台北|臺北|高雄|新北',
@@ -10,6 +10,10 @@ function main(config, profileName) {
   ].join('|');
   const info = '剩余|剩餘|流量|到期|有效期|套餐|重置|官网|官網|订阅|訂閱';
   const infoRE = new RegExp(info);
+  // 低倍率按名称中的标记识别：0.1倍率、0.01倍率等，要求大于 0 且小于 1。
+  // 未标倍率、1倍率及更高倍率不加入；这里只识别标记，不查询机场计费。
+  const lowRate = '(^|[^0-9.])0\\.[0-9]*[1-9][0-9]*\\s*倍率';
+  const lowRateRE = new RegExp(lowRate);
   // JS 和 Mihomo 的正则语法不同：显式节点用 JS 正则，集合用 region。
   const regionRE = /香港|澳门|澳門|台湾|台灣|臺灣|台北|臺北|高雄|新北|🇭🇰|🇲🇴|🇹🇼|hong[ _-]*kong|maca[ou]|taiwan|taipei|(^|[^a-z])(hk|hkg|mo|mac|tw|twn)([^a-z]|$)/i;
   const nodes = (config.proxies || []).filter(p =>
@@ -36,6 +40,7 @@ function main(config, profileName) {
   }
   const automaticNodes = nodeNames;
   const nonRegionalNodes = automaticNodes.filter(n => !regionRE.test(n));
+  const lowRateNodes = nonRegionalNodes.filter(n => lowRateRE.test(n));
   if (!nonRegionalNodes.length && !providerNames.length) {
     throw new Error('没有非港澳台节点，无法创建优选自动和优选均衡组。');
   }
@@ -111,27 +116,35 @@ function main(config, profileName) {
   }
   const manual = {
     name: names[0], type: 'select',
-    proxies: [names[2], names[1], names[3], names[4], ...nodeNames, 'DIRECT'],
+    proxies: [names[2], names[6], names[1], names[3], names[4], ...nodeNames, 'DIRECT'],
     'exclude-filter': info
   };
   if (providerNames.length) manual.use = [...providerNames];
   const ai = {
     name: names[5], type: 'select',
-    proxies: [names[0], names[2], names[1], names[3], names[4], ...nodeNames, 'DIRECT'],
+    proxies: [names[0], names[2], names[6], names[1], names[3], names[4], ...nodeNames, 'DIRECT'],
     'exclude-filter': info
   };
   if (providerNames.length) ai.use = [...providerNames];
   config.proxies = nodes;
   config['proxy-groups'] = [
     manual,
-    ai,
-    automatic(names[1], 'url-test', automaticNodes, info),
     automatic(names[2], 'url-test', nonRegionalNodes, [info, region].join('|')),
+    {
+      ...automatic(names[6], 'url-test',
+        lowRateNodes.length || providerNames.length ? lowRateNodes : ['REJECT'],
+        [info, region].join('|')),
+      // 显式节点已在 JS 中筛选；filter 负责筛选通过 use 引入的集合节点。
+      // 无匹配节点时沿用 empty-fallback: REJECT，不混入普通倍率节点。
+      filter: lowRate
+    },
+    automatic(names[1], 'url-test', automaticNodes, info),
     automatic(names[3], 'fallback', automaticNodes, info),
     {
       ...automatic(names[4], 'load-balance', nonRegionalNodes, [info, region].join('|')),
       strategy: 'consistent-hashing'
-    }
+    },
+    ai
   ];
   // 国内及局域网直连，其余交给手动选择。
   // GEOSITE / GEOIP 依赖客户端地理数据库，首次使用可能需要下载。
