@@ -176,15 +176,38 @@ function main(config, profileName) {
   // DIRECT = 直连；手动选择 = 跟随该组当前选择的节点或子组。
   // DOMAIN = 仅匹配这个完整域名；DOMAIN-SUFFIX = 匹配域名及其子域名。
   const customPrependRules = [
-    // Gemini 主站：使用 AI 组选择节点。
+    // Google Gemini：网页、AI Studio 与开发者入口。
     'DOMAIN-SUFFIX,gemini.google.com,AI',
     'DOMAIN-SUFFIX,gemini.google,AI',
+    'DOMAIN-SUFFIX,aistudio.google.com,AI',
+    'DOMAIN-SUFFIX,ai.google.dev,AI',
 
-    // Grok 主站：使用 AI 组选择节点。
-    'DOMAIN-SUFFIX,grok.com,AI',
-
-    // Google Antigravity 主站：使用 AI 组选择节点；登录域名由其他规则处理。
+    // Google Antigravity 与相关 AI API：独立匹配，避免接管整个 googleapis.com。
+    // 这些请求统一使用 AI 组；分流正确不代表账号资格或出口地区一定可用。
     'DOMAIN-SUFFIX,antigravity.google,AI',
+    'DOMAIN,daily-cloudcode-pa.googleapis.com,AI',
+    'DOMAIN,cloudcode-pa.googleapis.com,AI',
+    'DOMAIN,aicode.googleapis.com,AI',
+    'DOMAIN,businessaicode.googleapis.com,AI',
+    'DOMAIN,generativelanguage.googleapis.com,AI',
+
+    // Grok：网页及 x.ai 域名（含其 API 子域名）。
+    'DOMAIN-SUFFIX,grok.com,AI',
+    'DOMAIN-SUFFIX,x.ai,AI',
+
+    // ChatGPT / OpenAI：网页、API、静态资源及用户内容。
+    'DOMAIN-SUFFIX,chatgpt.com,AI',
+    'DOMAIN-SUFFIX,openai.com,AI',
+    'DOMAIN-SUFFIX,oaistatic.com,AI',
+    'DOMAIN-SUFFIX,oaiusercontent.com,AI',
+
+    // Claude / Anthropic：网页及 API 子域名。
+    'DOMAIN-SUFFIX,claude.ai,AI',
+    'DOMAIN-SUFFIX,anthropic.com,AI',
+
+    // 其他 AI 服务：Perplexity 与 NotebookLM。
+    'DOMAIN-SUFFIX,perplexity.ai,AI',
+    'DOMAIN-SUFFIX,notebooklm.google.com,AI',
 
     // AI 比价网：priceai.cc 及其子域名直连。
     'DOMAIN-SUFFIX,priceai.cc,DIRECT',
