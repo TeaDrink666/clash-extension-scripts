@@ -182,12 +182,6 @@ function main(config, profileName) {
     'DOMAIN-SUFFIX,grok.com,AI',
     'DOMAIN-SUFFIX,x.ai,AI',
 
-    // ChatGPT / OpenAI：网页、API、静态资源及用户内容。
-    'DOMAIN-SUFFIX,chatgpt.com,AI',
-    'DOMAIN-SUFFIX,openai.com,AI',
-    'DOMAIN-SUFFIX,oaistatic.com,AI',
-    'DOMAIN-SUFFIX,oaiusercontent.com,AI',
-
     // Claude / Anthropic：网页及 API 子域名。
     'DOMAIN-SUFFIX,claude.ai,AI',
     'DOMAIN-SUFFIX,anthropic.com,AI',
