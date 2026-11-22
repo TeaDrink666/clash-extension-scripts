@@ -1,5 +1,5 @@
 // FlClash 版本：各机场统一为七个代理组。
-// 脚本保留 IPv6、DNS 等默认配置；最终是否被覆盖取决于客户端设置。
+// 脚本默认启用 IPv6 和 DNS AAAA 解析，客户端覆写可能改变最终生效值。
 function main(config, profileName) {
   const names = ['手动选择', '自动选择', '优选自动', '故障转移', '优选均衡', 'AI', '低倍率优选自动'];
   const url = 'https://www.gstatic.com/generate_204';
@@ -152,8 +152,8 @@ function main(config, profileName) {
   // TCP 并发和统一延迟用于改善连接与测速的可比性。
   config['tcp-concurrent'] = true;
   config['unified-delay'] = true;
-  // 不使用 IPv6：同时关闭核心 IPv6 和 DNS 的 AAAA 解析。
-  config.ipv6 = false;
+  // 默认启用核心 IPv6 和 DNS 的 AAAA 解析。
+  config.ipv6 = true;
   // 不允许其他局域网设备连接本机代理。
   config['allow-lan'] = false;
   config['geo-auto-update'] = true;
@@ -162,12 +162,12 @@ function main(config, profileName) {
     ...(config.profile || {}),
     'store-selected': true
   };
-  // 保留机场原有 nameserver / fallback；关闭 IPv6 和 DNS 遵循规则，
+  // 保留机场原有 nameserver / fallback，并关闭 DNS 遵循规则，
   // 避免 DNS 查询依赖当前代理节点。客户端覆写可能改变最终生效值。
   config.dns = {
     ...(config.dns || {}),
     enable: true,
-    ipv6: false,
+    ipv6: true,
     'respect-rules': false,
   };
   config.mode = 'rule';
