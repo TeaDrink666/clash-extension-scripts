@@ -2,8 +2,8 @@
 
 为 Clash Verge Rev 和 FlClash 提供统一代理组及分流规则。
 
-- [CVR 版本](统一代理组扩展脚本-CVR.js)
-- [FlClash 版本](统一代理组扩展脚本-FlClash.js)
+- [CVR 版本](统一代理组扩展脚本-CVR.js) · [Raw 链接](https://raw.githubusercontent.com/TeaDrink666/clash-extension-scripts/main/%E7%BB%9F%E4%B8%80%E4%BB%A3%E7%90%86%E7%BB%84%E6%89%A9%E5%B1%95%E8%84%9A%E6%9C%AC-CVR.js)
+- [FlClash 版本](统一代理组扩展脚本-FlClash.js) · [Raw 链接](https://raw.githubusercontent.com/TeaDrink666/clash-extension-scripts/main/%E7%BB%9F%E4%B8%80%E4%BB%A3%E7%90%86%E7%BB%84%E6%89%A9%E5%B1%95%E8%84%9A%E6%9C%AC-FlClash.js)
 - [版本说明与设置](版本说明.md)
 
 将对应脚本的完整内容复制到客户端的 JavaScript 扩展脚本编辑器，保存并重新加载配置。
