@@ -166,6 +166,8 @@ function main(config, profileName) {
     // Google Gemini：网页、AI Studio 与开发者入口。
     'DOMAIN-SUFFIX,gemini.google.com,AI',
     'DOMAIN-SUFFIX,gemini.google,AI',
+    // Gemini 专用静态域名，精确匹配。
+    'DOMAIN,gemini.gstatic.com,AI',
     'DOMAIN-SUFFIX,aistudio.google.com,AI',
     'DOMAIN-SUFFIX,ai.google.dev,AI',
 
