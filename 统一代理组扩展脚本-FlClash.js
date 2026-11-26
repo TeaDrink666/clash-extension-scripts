@@ -176,13 +176,27 @@ function main(config, profileName) {
   // DIRECT = 直连；手动选择 = 跟随该组当前选择的节点或子组。
   // DOMAIN = 仅匹配这个完整域名；DOMAIN-SUFFIX = 匹配域名及其子域名。
   const customPrependRules = [
-    // Google Gemini：网页、AI Studio 与开发者入口。
-    'DOMAIN-SUFFIX,gemini.google.com,AI',
-    'DOMAIN-SUFFIX,gemini.google,AI',
-    // Gemini 专用静态域名，精确匹配。
-    'DOMAIN,gemini.gstatic.com,AI',
+    // Gemini 主站、静态资源和带 gemini 字样的网页后端统一按关键词匹配。
+    'DOMAIN-KEYWORD,gemini,AI',
+    // 不含 gemini 字样的相关端点继续单独匹配。
+    // Gemini Canvas 的实时请求，以及 Google 防火墙清单中的辅助端点。
+    'DOMAIN,signaler-pa.clients6.google.com,AI',
+    'DOMAIN,waa-pa.clients6.google.com,AI',
     'DOMAIN-SUFFIX,aistudio.google.com,AI',
     'DOMAIN-SUFFIX,ai.google.dev,AI',
+    // AI Studio 短域名及网页后端。
+    'DOMAIN,ai.studio,AI',
+    'DOMAIN,alkalicore-pa.clients6.google.com,AI',
+    'DOMAIN,alkalimakersuite-pa.clients6.google.com,AI',
+    'DOMAIN,webchannel-alkalimakersuite-pa.clients6.google.com,AI',
+
+    // Gemini 在 Gmail、Docs、Drive 等 Workspace 产品中的侧栏后端。
+    'DOMAIN,appsgenaiserver-pa.clients.google.com,AI',
+    'DOMAIN,appsgenaiserver-pa.clients6.google.com,AI',
+    'DOMAIN,appsgenaiserver-pa.googleapis.com,AI',
+
+    // Gemini Code Assist IDE 的主 API。
+    'DOMAIN,cloudaicompanion.googleapis.com,AI',
 
     // Google Antigravity 与相关 AI API：独立匹配，避免接管整个 googleapis.com。
     // 这些请求统一使用 AI 组；分流正确不代表账号资格或出口地区一定可用。
